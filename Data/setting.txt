@@ -1,4 +1,0 @@
-School:Alimuddin Sabur Uddin Girl's High School
-Class:6
-Section:A
-Number of Students:124
