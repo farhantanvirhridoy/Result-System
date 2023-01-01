@@ -1,0 +1,12 @@
+101=Bangla
+107=English
+109=Mathematics
+127=Science
+111=Religion and Moral Education
+150=Bangladesh and Global Studies 
+154=ICT
+133=Physical Education and Health
+134=Agricultural Education
+151=Home Science
+148=Arts and Crafts
+155=Work and Life Oriented Education

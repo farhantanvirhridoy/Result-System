@@ -9,6 +9,12 @@ else:
     os.mkdir("Mark_sheet")
 
 
+subject_by_code = {
+    154:'ICT'
+}
+
+
+
 settings = dict()
 setting_file = open('setting.config', 'r').readlines()
 for setting in setting_file:
@@ -21,16 +27,8 @@ subjects = settings['Subjects'].split(",")
 school = settings['School']
 class_ = settings['Class']
 number_of_students = settings['Number of Students']
-optional = settings['Optional'].split(",")
-try:
-    optional_sub = subjects[optional.index('1')]
-except:
-    optional_sub = None
 
-if(optional_sub == None):
-    number_of_subjects = len(subjects)
-else:
-    number_of_subjects = len(subjects) - 1
+
 
 excel = settings['Excel']
 excels = []
@@ -173,6 +171,8 @@ def main():
 
     names = pd.read_excel('Data/names.xlsx')
 
+    
+
     std_no = names.count()[0]
 
     subjects = settings['Subjects'].split(",")
@@ -183,6 +183,7 @@ def main():
     tables = []
     for roll in range(0, std_no, 1):
         name = names.loc[roll].Name
+        optional_code = names.loc[roll].Optional
         for subject_file_name in subject_file_names:
             filename = subject_file_name.replace(" ", "_").lower()
             exec(f"{filename}_mark = {filename}.loc[roll]")
@@ -199,6 +200,17 @@ def main():
             exec(mystr)
 
             exec(f"gp.append({filename}_gp)")
+
+        try:
+
+            optional_sub = subject_by_code[optional_code]
+        except:
+            optional_sub = None
+
+        if (optional_sub!=None):
+            number_of_subjects = len(subjects) - 1
+        else:
+            number_of_subjects = len(subjects)
 
         if (optional_sub != None):
             
@@ -291,5 +303,24 @@ def main():
 
         pdfgen(table[0], table[1], table[2], table[3], table[4])
 
+    
+    gpadf = df.iloc[:,-2]
+    gpa_lst =  gpadf.to_list()[1:]
+    pass_student = sum([1 if i>0 else 0 for i in gpa_lst])
+    fail_student = std_no - pass_student
+    percentage_of_pass = round(pass_student*100/std_no,2)
+    first_place_index =  pos.index(1)   
+    first_place = names.loc[first_place_index].Name  
+    gpa5_student = sum([1 if i>=5 else 0 for i in gpa_lst])
+    
+    info = []
+    info.append(pass_student)
+    info.append(fail_student)
+    info.append(percentage_of_pass)
+    info.append(first_place)
+    info.append(gpa5_student)
 
+    return info
+    
+    
 main()

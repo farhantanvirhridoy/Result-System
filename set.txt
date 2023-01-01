@@ -1,0 +1,8 @@
+School=
+Class=
+Section=
+Exam=
+Number of Students=
+Subjects=Bangla,Bangladesh and Global Studies,Islam,Science,ICT
+Excel=hfh/fhfh/fhfhf/fhf/fh
+Totals=fh,,hfhfh,hfh,fh

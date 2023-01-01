@@ -12,6 +12,7 @@ for setting in setting_file:
     [key, value] = setting.rstrip().split('=')
     settings[key] = value
 
+std_no = settings['Number of Students']
 subjects = settings['Subjects'].split(",")
 excel = settings['Excel']
 excels = []
@@ -24,7 +25,12 @@ for row in excel.split("/"):
 
 for i, subject in enumerate(subjects):
     filename = subject.replace(" ", "_").lower() + '.xlsx'
-    df = pd.DataFrame([["Roll"] + excels[i]])
+    rolls = []
+    
+    #df = pd.DataFrame([["Roll"] + excels[i]]).append(pd.DataFrame([i] for i in range(1,int(std_no)+1,1)))
+    df1 = pd.DataFrame([["Roll"] + excels[i]])
+    df2 = pd.DataFrame([i] for i in range(1,int(std_no)+1,1))
+    df = pd.concat([df1,df2])
     if (os.path.exists('Data/'+filename)):
         pass
     else:
