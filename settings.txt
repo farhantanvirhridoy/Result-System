@@ -3,6 +3,6 @@ Class=6
 Section=A
 Exam=Annual
 Number of Students=124
-Subjects=Bangla,English,Bangladesh and Global Studies,Islam,General Math,Science,Home Economics,ICT
+Subjects=Bangla,English,Bangladesh and Global Studies,Religion and Moral Education,Mathematics,Science,Home Science,ICT
 Excel=CQ,MCQ,Second/First,Second/CQ,MCQ/CQ,MCQ/CQ,MCQ/CQ,MCQ/CQ,MCQ/CQ
 Totals=150,150,100,100,100,100,100,25

@@ -1,0 +1,11 @@
+101=Bangla
+107=English
+109=Mathematics
+136=Physics
+111=Religion and Moral Education
+150=Bangladesh and Global Studies 
+134=Agricultural Education
+151=Home Science
+137=Chemistry
+138=Biology
+126=Higher Mathematics
