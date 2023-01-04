@@ -1,0 +1,8 @@
+School=Girls School
+Class=7
+Section=B
+Exam=Half Yearly
+Number of Students=5
+Subjects=Bangla,English,Mathematics,Science,Religion and Moral Education,Bangladesh and Global Studies,ICT,Agricultural Education
+Excel=cq,mcq,second/firstpaper,secondpaper/cq,mcq/cq,mcq/cq,mcq/cq,mcq/cq/cq,mcq
+Totals=150,150,100,100,100,100,50,100

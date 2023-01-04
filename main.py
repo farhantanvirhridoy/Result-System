@@ -134,7 +134,7 @@ def main():
     }
 
     settings = dict()
-    setting_file = open('setting.config', 'r').readlines()
+    setting_file = open('setting.txt', 'r').readlines()
     for setting in setting_file:
         [key, value] = setting.rstrip().split('=')
         settings[key] = value
@@ -204,7 +204,7 @@ def main():
 
             if 0.0 in gp:
                 if (gp.index(0.0) == subjects.index(optional_sub)):
-                    pass
+                    gpa = round(sum(gp)/number_of_subjects,2)
                 else:
                     gpa = 0
             else:
@@ -252,7 +252,7 @@ def main():
             temp.append(grademaker(gp[i-1]))
             table2.append(temp)
 
-        table4 = [["Total Marks", sum(marks)], ["GPA", gpa], [
+        table4 = [["Total Marks", sum(marks)], ["GPA", "{:.2f}".format(gpa)], [
             "Grade", grademaker(gpa)]]
 
         table3 = [["", "--------------------------------"],
@@ -301,7 +301,7 @@ def main():
     percentage_of_pass = round(pass_student*100/std_no, 2)
     first_place_index = pos.index(1)
     first_place = names.loc[first_place_index].Name
-    first_place_gpa = results[first_place_index][-2]
+    first_place_gpa = results[first_place_index+1][-2]
     gpa5_student = sum([1 if i == '5.00' else 0 for i in gpa_lst])
 
     info = []

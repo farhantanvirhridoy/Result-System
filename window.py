@@ -134,9 +134,7 @@ def main():
     else:
         os.mkdir("Mark_sheet")
 
-    subject_by_code = {
-        154: 'ICT'
-    }
+    
 
     settings = dict()
     setting_file = open('setting.txt', 'r').readlines()
@@ -195,8 +193,10 @@ def main():
             exec(f"gp.append({filename}_gp)")
 
         try:
-
-            optional_sub = subject_by_code[optional_code]
+            if(class_ == '6' or class_ == '7' or class_ == '8'):
+                optional_sub = subjects8bycode[str(optional_code)]
+            elif(class_ == '9' or class_ == '10'):
+                optional_sub = subjects8bycode[str(optional_code)]
         except:
             optional_sub = None
 
@@ -209,7 +209,7 @@ def main():
 
             if 0.0 in gp:
                 if (gp.index(0.0) == subjects.index(optional_sub)):
-                    pass
+                    gpa = round(sum(gp)/number_of_subjects, 2)
                 else:
                     gpa = 0
             else:
@@ -257,7 +257,7 @@ def main():
             temp.append(grademaker(gp[i-1]))
             table2.append(temp)
 
-        table4 = [["Total Marks", sum(marks)], ["GPA", gpa], [
+        table4 = [["Total Marks", sum(marks)], ["GPA", "{:.2f}".format(gpa)], [
             "Grade", grademaker(gpa)]]
 
         table3 = [["", "--------------------------------"],
@@ -306,7 +306,7 @@ def main():
     percentage_of_pass = round(pass_student*100/std_no, 2)
     first_place_index = pos.index(1)
     first_place = names.loc[first_place_index].Name
-    first_place_gpa = results[first_place_index][-2]
+    first_place_gpa = results[first_place_index+1][-2]
     gpa5_student = sum([1 if i == '5.00' else 0 for i in gpa_lst])
 
     info = []
@@ -320,7 +320,6 @@ def main():
     return info
 
 
-
 # create excel function
 def create_excel():
 
@@ -331,7 +330,7 @@ def create_excel():
 
     settings = dict()
     setting_file = open('setting.txt', 'r').readlines()
-    
+
     for setting in setting_file:
         [key, value] = setting.rstrip().split('=')
         settings[key] = value
@@ -346,15 +345,14 @@ def create_excel():
             column.append(col)
         excels.append(column)
 
-
     for i, subject in enumerate(subjects):
         filename = subject.replace(" ", "_").lower() + '.xlsx'
         rolls = []
-        
-        #df = pd.DataFrame([["Roll"] + excels[i]]).append(pd.DataFrame([i] for i in range(1,int(std_no)+1,1)))
+
+        # df = pd.DataFrame([["Roll"] + excels[i]]).append(pd.DataFrame([i] for i in range(1,int(std_no)+1,1)))
         df1 = pd.DataFrame([["Roll"] + excels[i]])
-        df2 = pd.DataFrame([i] for i in range(1,int(std_no)+1,1))
-        df = pd.concat([df1,df2])
+        df2 = pd.DataFrame([i] for i in range(1, int(std_no)+1, 1))
+        df = pd.concat([df1, df2])
         if (os.path.exists('Data/'+filename)):
             pass
         else:
@@ -362,11 +360,10 @@ def create_excel():
     if (os.path.exists('Data/'+'names.xlsx')):
         pass
     else:
-        df1 = pd.DataFrame([["Roll", "Name","Optional"]])
-        df2 = pd.DataFrame([i] for i in range(1,int(std_no)+1,1))
-        df = pd.concat([df1,df2])
+        df1 = pd.DataFrame([["Roll", "Name", "Optional"]])
+        df2 = pd.DataFrame([i] for i in range(1, int(std_no)+1, 1))
+        df = pd.concat([df1, df2])
         df.to_excel('Data/'+'names.xlsx', index=False, header=False)
-
 
 
 # Entry status function
@@ -378,17 +375,18 @@ def status():
         [key, value] = setting.rstrip().split('=')
         settings[key] = value
 
-    response=[]
-    
+    response = []
+
     subject_file_names = settings['Subjects'].split(",")
     for subject_file_name in subject_file_names:
         filename = subject_file_name.replace(" ", "_").lower()
         exec(f"{filename} = pd.read_excel('data/{filename}.xlsx')")
-        exec(f"count_nan = {filename}.isna().sum().sum()",locals(),ldict)
+        exec(f"count_nan = {filename}.isna().sum().sum()", locals(), ldict)
         count_nan = ldict['count_nan']
         if (count_nan != 0):
 
-            response.append(str(count_nan) + " data missing in " + subject_file_name)
+            response.append(str(count_nan) +
+                            " data missing in " + subject_file_name)
         else:
             response.append("All data is present in " + subject_file_name)
 
@@ -401,43 +399,34 @@ def status():
     return response
 
 
-
-
-
-
-
 root = Tk()
 root.title("Digital Result System")
 root.geometry('1000x600')
-#root.resizable(width=FALSE, height=FALSE)
+# root.resizable(width=FALSE, height=FALSE)
 
 class_option_var = StringVar()
 class_option_var.set('Select class')
 
 subjects8bycode = dict()
 subjects8byname = dict()
-file8 = open('subject_list_class8.txt','r')
+file8 = open('subject_list_class8.txt', 'r')
 for file in file8:
     [key, value] = file.rstrip().split('=')
     subjects8bycode[key] = value
     subjects8byname[value] = key
 
 
-
 subjects10bycode = dict()
 subjects10byname = dict()
-file10 = open('subject_list_class10.txt','r')
+file10 = open('subject_list_class10.txt', 'r')
 for file in file10:
     [key, value] = file.rstrip().split('=')
     subjects10bycode[key] = value
     subjects10byname[value] = key
 
 
-
 def calculation():
     info = main()
-    
-
 
 
 def setup():
@@ -447,7 +436,7 @@ def setup():
     setupframe.pack(fill=BOTH, expand=True)
 
     def save_config():
-        file = open('setting.txt','w')
+        file = open('setting.txt', 'w')
         school_name = school_entry.get()
         file.writelines(f"School={school_name}")
         class_name = class_option_var.get()
@@ -461,20 +450,19 @@ def setup():
         file.writelines("\nSubjects="+",".join(subject_lst))
         file.writelines("\nExcel=")
         for i, entry in enumerate(mark_input_ref):
-            if (i+1==len(mark_input_ref)):
+            if (i+1 == len(mark_input_ref)):
                 file.writelines(entry.get())
             else:
                 file.writelines(entry.get()+'/')
         file.writelines("\nTotals=")
         for i, entry in enumerate(total_mark_ref):
-            if (i+1==len(total_mark_ref)):
+            if (i+1 == len(total_mark_ref)):
                 file.writelines(entry.get())
             else:
                 file.writelines(entry.get()+',')
         file.close()
 
         create_excel()
-        
 
     exam_frame = LabelFrame(setupframe, text='Exam information')
     exam_frame.pack(padx=5, pady=5, anchor=N, side=TOP)
@@ -497,7 +485,7 @@ def setup():
     class_label = Label(exam_frame, text='Class: ')
     class_label.grid(row=1, column=2)
     class_entry = Entry(exam_frame)
-    options = ['6','7']
+    options = ['6', '7']
     class_entry = OptionMenu(exam_frame, class_option_var, *options)
     class_entry.grid(row=1, column=3)
 
@@ -511,62 +499,59 @@ def setup():
     student_entry = Entry(exam_frame)
     student_entry.grid(row=2, column=3)
 
-
     subject_lst = []
     mark_input_ref = []
     total_mark_ref = []
-    
+
     def add_sub():
         global add_sub_btn
         global subject_name
         add_sub_btn.config(state=DISABLED)
         subject_name.config(state=DISABLED)
-        
-        sub_detail_frame.pack(anchor=N ,side=LEFT,padx=20, pady=5)
-        Label(sub_detail_frame, text='Code').grid(row=0,column=0)
-        Label(sub_detail_frame, text='Subject',width=23).grid(row=0, column=1)
-        Label(sub_detail_frame, text='Column for Mark Input').grid(row=0, column=2)
-        Label(sub_detail_frame, text='Total Marks').grid(row=0, column=3,padx=2)
-        
+
+        sub_detail_frame.pack(anchor=N, side=LEFT, padx=20, pady=5)
+        Label(sub_detail_frame, text='Code').grid(row=0, column=0)
+        Label(sub_detail_frame, text='Subject', width=23).grid(row=0, column=1)
+        Label(sub_detail_frame, text='Column for Mark Input').grid(
+            row=0, column=2)
+        Label(sub_detail_frame, text='Total Marks').grid(
+            row=0, column=3, padx=2)
+
         subjects = subject_name.selection_get()
         for i, subject in enumerate(subjects.split('\n')):
-            Label(sub_detail_frame,text=subject[:3]).grid(row=i+1,column=0)
-            Label(sub_detail_frame,text=subject[4:]).grid(row=i+1,column=1)
-            mir = Entry(sub_detail_frame,width=24)
+            Label(sub_detail_frame, text=subject[:3]).grid(row=i+1, column=0)
+            Label(sub_detail_frame, text=subject[4:]).grid(row=i+1, column=1)
+            mir = Entry(sub_detail_frame, width=24)
+            mir.insert(0, "cq,mcq")
             mir.grid(row=i+1, column=2)
-            tmr = Entry(sub_detail_frame,width=10)
+            tmr = Entry(sub_detail_frame, width=10)
+            tmr.insert(0, 100)
             tmr.grid(row=i+1, column=3)
-            
-            
 
             subject_lst.append(subject[4:])
             mark_input_ref.append(mir)
             total_mark_ref.append(tmr)
-            
-            
-        
-        save_btn = Button(sub_detail_frame,text='Save Setup', command=save_config)
+
+        save_btn = Button(sub_detail_frame, text='Save Setup',
+                          command=save_config)
         save_btn.grid(row=i+2, column=0, columnspan=4)
-
-
 
     def next_cmd():
         next_btn.config(state=DISABLED)
         global add_sub_btn
         global subject_name
-        subject_name = Listbox(subject_frame, selectmode=MULTIPLE, width=60, height=15)
+        subject_name = Listbox(
+            subject_frame, selectmode=MULTIPLE, width=60, height=15)
         subject_name.pack()
 
-        
-
-        if(class_option_var.get() == '6' or class_option_var.get() == '7' or class_option_var.get() == '8'):
+        if (class_option_var.get() == '6' or class_option_var.get() == '7' or class_option_var.get() == '8'):
             x = list(subjects8bycode.values())
             y = list(subjects8bycode.keys())
-        elif(class_entry.get() == '9' or class_entry.get() == '10'):
+        elif (class_entry.get() == '9' or class_entry.get() == '10'):
             x = list(subjects10bycode.values())
-            y= list(subjects10bycode.keys())
+            y = list(subjects10bycode.keys())
 
-        #x = ["Bangla", "English", "Bangladesh and Global Studies",
+        # x = ["Bangla", "English", "Bangladesh and Global Studies",
         #    "Islam", "General Math", "Science", "Home Economics", "ICT"]
 
         for i in range(len(x)):
@@ -574,18 +559,13 @@ def setup():
             subject_name.insert(END, y[i] + ' ' + x[i])
             subject_name.itemconfig(i, bg="lime")
 
-        add_sub_btn = Button(subject_frame, text='Add Subjects', command=add_sub)
+        add_sub_btn = Button(
+            subject_frame, text='Add Subjects', command=add_sub)
         add_sub_btn.pack(pady=5)
 
-    next_btn = Button(exam_frame, text='Next',command=next_cmd)
+    next_btn = Button(exam_frame, text='Next', command=next_cmd)
     next_btn.grid(row=3, columnspan=4, pady=5)
 
-    
-    
-    
-    
-
-    
 
 def entry():
     for widget in content_frame.winfo_children():
@@ -593,36 +573,49 @@ def entry():
     entryframe = Frame(content_frame, bg='white')
     entryframe.pack(fill=BOTH, expand=True)
     for st in status():
-        Label(entryframe,text= st, font=('Times',12), bg = 'white').pack(anchor=W,padx=10,pady=10)
+        Label(entryframe, text=st, font=('Times', 12),
+              bg='white').pack(anchor=W, padx=10, pady=10)
 
 
 def calc():
     for widget in content_frame.winfo_children():
         widget.destroy()
-    calcframe = Frame(content_frame, bg='blue')
+    calcframe = Frame(content_frame, bg='skyblue')
     calcframe.pack(fill=BOTH, expand=True)
 
     def calculation():
-        Label(calcframe, text='Result Summary', font=('Times', 20)).pack(pady=10)
+        Label(calcframe, text='Result Summary',
+              font=('Times', 20)).pack(pady=10)
         info = main()
-        text = 'Number of GPA5: ' + str(info[5])
-        text = text + '\nNumber of student passed: '+ str(info[0])
+        text = 'Number of A+: ' + str(info[5])
+        text = text + '\nNumber of student passed: ' + str(info[0])
         text = text + '\nNumber of student failed: ' + str(info[1])
         text = text + '\nPercentage of pass: ' + str(info[2]) + '%'
-        text = text + '\nFirst Position: ' + info[3].title() + ' (GPA:'+str(info[4])+')'
-        Label(calcframe,text=text).pack()
-    
-    Button(calcframe, text='Start Calculation',font=('Times',12), command=calculation).pack(pady=10)
-    
+
+        Label(calcframe, text=text, justify=LEFT).pack()
+        Label(calcframe, text='First Position',
+              font=('Times', 20)).pack(pady=10)
+        text = 'Name: ' + info[3].title()
+        text += '\nGPA: ' + str(info[4])
+        Label(calcframe, text=text, justify=LEFT).pack()
+
+    Button(calcframe, text='Start Calculation', font=(
+        'Times', 12), command=calculation).pack(pady=10)
+
 
 def check():
     for widget in content_frame.winfo_children():
         widget.destroy()
-    checkframe = Frame(content_frame, bg='blue')
+    checkframe = Frame(content_frame, bg='skyblue')
     checkframe.pack(fill=BOTH, expand=True)
-    
+
     settings = dict()
-    setting_file = open('setting.txt', 'r').readlines()
+    try:
+        setting_file = open('setting.txt', 'r').readlines()
+    except:
+        Label(checkframe, text='No previous setting file found',
+              font=('Times', 14)).pack()
+        return
     for setting in setting_file:
         [key, value] = setting.rstrip().split('=')
         settings[key] = value
@@ -633,25 +626,23 @@ def check():
     school = settings['School']
     class_ = settings['Class']
     number_of_students = settings['Number of Students']
-    
+
     section = settings['Section']
     excel = settings['Excel']
     excels = []
     for row in excel.split("/"):
-        
+
         excels.append(row)
 
     exam_frame = LabelFrame(checkframe, text='Exam information')
     exam_frame.pack(padx=5, pady=5, anchor=N, side=TOP)
-
-    
 
     sub_detail_frame = LabelFrame(checkframe, text="Subject Details")
 
     school_label = Label(exam_frame, text='Name of School: ')
     school_label.grid(row=0, column=0)
     school_entry = Entry(exam_frame, width=60)
-    school_entry.insert(0,school)
+    school_entry.insert(0, school)
     school_entry.grid(row=0, column=1, columnspan=3)
 
     exam_name_label = Label(exam_frame, text='Exam Name: ')
@@ -678,30 +669,31 @@ def check():
     student_entry.insert(0, number_of_students)
     student_entry.grid(row=2, column=3)
 
-    sub_detail_frame.pack(side=TOP, anchor=N,padx=5, pady=20)
-    Label(sub_detail_frame, text='Subject Code').grid(row=0,column=0)
-    Label(sub_detail_frame, text='Subject',width=23).grid(row=0, column=1)
+    sub_detail_frame.pack(side=TOP, anchor=N, padx=5, pady=20)
+    Label(sub_detail_frame, text='Subject Code').grid(row=0, column=0)
+    Label(sub_detail_frame, text='Subject', width=23).grid(row=0, column=1)
     Label(sub_detail_frame, text='Column for Mark Input').grid(row=0, column=2)
-    Label(sub_detail_frame, text='Total Marks').grid(row=0, column=3,padx=2)
-    
+    Label(sub_detail_frame, text='Total Marks').grid(row=0, column=3, padx=2)
 
-    for i,subject in enumerate(subjects):
-        Label(sub_detail_frame,text=subjects8byname[subject]).grid(row=i+1,column=0)
-        Label(sub_detail_frame,text=subject).grid(row=i+1,column=1)
-        mir = Entry(sub_detail_frame,width=24)
+    for i, subject in enumerate(subjects):
+        Label(sub_detail_frame, text=subjects8byname[subject]).grid(
+            row=i+1, column=0)
+        Label(sub_detail_frame, text=subject).grid(row=i+1, column=1)
+        mir = Entry(sub_detail_frame, width=24)
         mir.insert(0, excels[i])
         mir.grid(row=i+1, column=2)
-        tmr = Entry(sub_detail_frame,width=10)
+        tmr = Entry(sub_detail_frame, width=10)
         tmr.insert(0, totals[i])
         tmr.grid(row=i+1, column=3)
-        
 
 
 navbar = Frame(root, bg="green", width=100)
 navbar.pack(anchor=W, fill=Y, expand=False, side=LEFT)
 
-content_frame = Frame(root, bg="orange")
+content_frame = Frame(root, bg="skyblue")
 content_frame.pack(anchor=N, fill=BOTH, expand=True, side=LEFT)
+Label(content_frame, text="Welcome to digital Result system",
+      font=('Times', 18)).pack()
 
 
 check_btn = Button(navbar, text="Check", width=10, command=check)
