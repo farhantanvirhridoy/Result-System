@@ -485,7 +485,8 @@ def setup():
     class_label = Label(exam_frame, text='Class: ')
     class_label.grid(row=1, column=2)
     class_entry = Entry(exam_frame)
-    options = ['6', '7']
+    options = ['6', '7','8','9','10']
+    class_option_var.set('6')
     class_entry = OptionMenu(exam_frame, class_option_var, *options)
     class_entry.grid(row=1, column=3)
 
@@ -570,7 +571,7 @@ def setup():
 def entry():
     for widget in content_frame.winfo_children():
         widget.destroy()
-    entryframe = Frame(content_frame, bg='white')
+    entryframe = Frame(content_frame, bg='skyblue')
     entryframe.pack(fill=BOTH, expand=True)
     for st in status():
         Label(entryframe, text=st, font=('Times', 12),

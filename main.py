@@ -170,6 +170,7 @@ def main():
     gpas = dict()
     tables = []
     for roll in range(0, std_no, 1):
+        #is_blank = False
         name = names.loc[roll].Name
         optional_code = names.loc[roll].Optional
         for subject_file_name in subject_file_names:
@@ -181,7 +182,11 @@ def main():
             filename = subject_file_name.replace(" ", "_").lower()
             gpmaker_input = []
             for col in excels[i]:
+                #if(f"{filename}_mark.{col}" == 'blank'): 
+                    #is_blank = True
+                    #break;
                 gpmaker_input.append(f"{filename}_mark.{col}")
+            #if(is_blank): break
             gpmaker_input.append(f"total={totals[i]}")
             mystr = f"{filename}_gp = gpmaker("+','.join(gpmaker_input)+")"
 
@@ -199,6 +204,8 @@ def main():
             number_of_subjects = len(subjects) - 1
         else:
             number_of_subjects = len(subjects)
+
+        #if(is_blank): number_of_subjects -= 1
 
         if (optional_sub != None):
 
